@@ -70,4 +70,5 @@ def extract_resume_data(file_bytes: bytes) -> Dict:
         "email": email_match.group(0) if email_match else None,
         "phone": phone_match.group(0) if phone_match else None,
         "skills": skills
+        # "skills": ", ".join(set(skills_match)) if skills_match else None
     }

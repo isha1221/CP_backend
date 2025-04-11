@@ -34,6 +34,10 @@ class ResumeBase(BaseModel):
 class ResumeCreate(ResumeBase):
     pass
 
+
+class ResumeUpdate(ResumeBase):
+    pass
+
 class ResumeResponse(ResumeBase):
     id: int
 
