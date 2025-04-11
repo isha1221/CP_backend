@@ -11,6 +11,8 @@
 # app/models/resume_model.py
 from sqlalchemy import Column, Integer, String, Text
 from app.db import Base
+from typing import List, Optional
+from pydantic import BaseModel
 
 class ResumeData(Base):
     __tablename__ = "resumes"
@@ -21,3 +23,19 @@ class ResumeData(Base):
     phone = Column(String, nullable=True)
     skills = Column(Text, nullable=True)
     experience = Column(Text, nullable=True)
+
+class ResumeBase(BaseModel):
+    name: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    skills: Optional[List[str]]
+    experience: Optional[str]
+
+class ResumeCreate(ResumeBase):
+    pass
+
+class ResumeResponse(ResumeBase):
+    id: int
+
+    class Config:
+        orm_mode = True  

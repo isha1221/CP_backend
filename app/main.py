@@ -9,7 +9,7 @@ from typing import Optional
 from app.db import get_db
 from sqlalchemy.orm import Session
 from app.services.db_service import save_resume_data
-from app.schemas import ResumeResponse
+from app.models.resume_models import ResumeResponse
 
 app = FastAPI()
 

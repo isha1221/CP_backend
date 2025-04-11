@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.parser_service import extract_resume_data
-from app.schemas import ResumeCreate
+from app.models.resume_models import ResumeCreate
 
 
 router = APIRouter()
@@ -27,6 +27,7 @@ def manual_update(data: ResumeCreate):
         "email": data.email,
         "phone": data.phone,
         "skills": data.skills or [],
+        "experience":data.experience,
     }
 
     # You can store this in DB or pass to ML model
