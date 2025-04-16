@@ -1,0 +1,6 @@
+.env
+/app/dataset/*.csv
+/cleaned_career_data.csv
+*.db
+*__pycache__
+/venv/
