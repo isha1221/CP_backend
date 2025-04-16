@@ -4,7 +4,7 @@ from app.services.parser_service import extract_resume_data
 from app.services.db_service import save_resume_data
 from app.db import get_db
 from app.models.resume_models import ResumeCreate, ResumeData,ResumeResponse, ResumeUpdate
-from app.services.ml_service import predict_career_from_skills
+from app.services.ml_service import predict_top_careers
 
 
 
@@ -102,11 +102,24 @@ def manual_update(data: ResumeCreate):
 
 @router.post("/predict-career/{resume_id}")
 def predict_career(resume_id: int, db: Session = Depends(get_db)):
+    # resume = db.query(ResumeData).filter(ResumeData.id == resume_id).first()
+    # if not resume:
+    #     raise HTTPException(status_code=404, detail="Resume not found")
+
+    # skills = resume.skills.split(", ") if resume.skills else []
+    # prediction = predict_career_from_skills(skills)
+
+    # return {"recommended_career": prediction}    
+    
     resume = db.query(ResumeData).filter(ResumeData.id == resume_id).first()
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")
 
     skills = resume.skills.split(", ") if resume.skills else []
-    prediction = predict_career_from_skills(skills)
 
-    return {"recommended_career": prediction}    
+    result = predict_top_careers(skills)
+
+    return {
+        "top_predictions": result["top_predictions"],
+        "probabilities": result["probabilities"]
+    }
