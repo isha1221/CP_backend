@@ -43,3 +43,5 @@ class ResumeResponse(ResumeBase):
 
     class Config:
         orm_mode = True  
+        
+        
