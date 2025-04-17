@@ -16,7 +16,7 @@ app = FastAPI()
 # Allow frontend communication (e.g. React)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Set your frontend domain in production
+    allow_origins=["http://localhost:3000"],  # Set your frontend domain in production
     allow_credentials=True,
     allow_methods=["*"], #allow all existing HTTP methods
     allow_headers=["*"], #Allow all custom headers to be sent in the request. 
