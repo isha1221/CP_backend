@@ -1,0 +1,2 @@
+training_date,num_samples,num_features,num_classes,model_type
+2025-04-21 17:27:34,26518,15000,302,RandomForestClassifier

@@ -10,7 +10,13 @@ from app.db import get_db
 from sqlalchemy.orm import Session
 from app.services.db_service import save_resume_data
 from app.models.resume_models import ResumeResponse
+from app.routers import auth_routes
 
+ 
+origins = [    "http://localhost.tiangolo.com",    "https://localhost.tiangolo.com",    "http://localhost",    "http://localhost:8080",]
+ 
+
+ 
 app = FastAPI()
 
 # Allow frontend communication (e.g. React)
@@ -24,6 +30,7 @@ app.add_middleware(
 
 
 app.include_router(resume_routes.router, prefix="/resume")
+app.include_router(auth_routes.router, prefix="/auth", tags=["auth"])
 
 
 # --- Health Check ---

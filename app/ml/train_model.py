@@ -48,7 +48,7 @@ from sklearn.pipeline import Pipeline
 import joblib
 
 # Load cleaned data
-df = pd.read_csv("cleaned_job_data.csv")
+df = pd.read_csv("categorized_jobs.csv")
 
 # Drop any missing or bad rows
 df = df.dropna(subset=["Key Skills", "Job Title"])
