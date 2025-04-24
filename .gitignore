@@ -8,3 +8,5 @@
 /app/ml/test_train.py
 /app/reports
 resume_data.db-journal
+*.pkl
+*.csv
