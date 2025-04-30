@@ -1,31 +1,18 @@
+
 from fastapi import APIRouter, Path, UploadFile, File, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.services.parser_service import extract_resume_data
 from app.services.db_service import save_resume_data
 from app.db import get_db
-from app.models.resume_models import ResumeCreate, ResumeData,ResumeResponse, ResumeUpdate
+from app.models.resume_models import ResumeCreate, ResumeData, ResumeResponse, ResumeUpdate
 from app.services.ml_service import predict_top_careers
-
-
+from app.routers.auth_routes import get_current_user
+from app.models.auth_models import User 
 
 router = APIRouter()
 
-# @router.post("/upload")
-# async def upload_resume(file: UploadFile = File(...)):
-#     if not file.filename.endswith(".pdf"):
-#         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-    
-#     contents = await file.read()
-#     extracted_data = extract_resume_data(contents)
-
-#     return {
-#         "filename": file.filename,
-#         "parsed_data": extracted_data
-#     }
-
-
 @router.post("/upload", response_model=ResumeResponse)
-async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     print("✅ File received")
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
@@ -35,8 +22,8 @@ async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_
     extracted_data = extract_resume_data(contents)
     print("✅ Parsing complete:", extracted_data)
 
-    # Save parsed resume data to DB
-    saved = save_resume_data(db, extracted_data)
+    # Save parsed resume data to DB with user_id from JWT token
+    saved = save_resume_data(db, extracted_data, user_id=current_user.id)
     print("✅ Saved to DB")
 
     return saved
@@ -44,11 +31,16 @@ async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_
 @router.get("/{resume_id}", response_model=ResumeResponse)
 def get_resume_by_id(
     resume_id: int = Path(..., description="The ID of the resume to retrieve"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     resume = db.query(ResumeData).filter(ResumeData.id == resume_id).first()
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")
+    
+    # Check if the resume belongs to the authenticated user
+    if resume.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to access this resume")
 
     # Convert comma-separated string back to list for skills
     resume.skills = resume.skills.split(", ") if resume.skills else []
@@ -90,7 +82,7 @@ def manual_update(data: ResumeCreate):
         "email": data.email,
         "phone": data.phone,
         "skills": data.skills or [],
-        "experience":data.experience,
+        "experience": data.experience,
     }
 
     # You can store this in DB or pass to ML model
@@ -102,15 +94,6 @@ def manual_update(data: ResumeCreate):
 
 @router.post("/predict-career/{resume_id}")
 def predict_career(resume_id: int, db: Session = Depends(get_db)):
-    # resume = db.query(ResumeData).filter(ResumeData.id == resume_id).first()
-    # if not resume:
-    #     raise HTTPException(status_code=404, detail="Resume not found")
-
-    # skills = resume.skills.split(", ") if resume.skills else []
-    # prediction = predict_career_from_skills(skills)
-
-    # return {"recommended_career": prediction}    
-    
     resume = db.query(ResumeData).filter(ResumeData.id == resume_id).first()
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")

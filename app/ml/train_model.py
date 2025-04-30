@@ -69,7 +69,7 @@ y_encoded = label_encoder.fit_transform(y)
 model = Pipeline([
     ("tfidf", TfidfVectorizer(max_features=5000, stop_words="english", ngram_range=(1, 2))),
     ("clf", LogisticRegression(max_iter=1000))
-])
+]) 
 
 # Train and save
 model.fit(X, y_encoded)

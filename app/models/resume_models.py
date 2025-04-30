@@ -9,7 +9,7 @@
 
 
 # app/models/resume_model.py
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from app.db import Base
 from typing import List, Optional
 from pydantic import BaseModel
@@ -23,6 +23,8 @@ class ResumeData(Base):
     phone = Column(String, nullable=True)
     skills = Column(Text, nullable=True)
     experience = Column(Text, nullable=True)
+    
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
 class ResumeBase(BaseModel):
     name: Optional[str]
