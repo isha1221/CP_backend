@@ -1,18 +1,8 @@
-# from pydantic import BaseModel, EmailStr
-# from typing import List, Optional
-
-# class ResumeUpdate(BaseModel):
-#     name: Optional[str]
-#     email: Optional[EmailStr]
-#     phone: Optional[str]
-#     skills: Optional[List[str]]
-
-
-# app/models/resume_model.py
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from app.db import Base
 from typing import List, Optional
 from pydantic import BaseModel
+
 
 class ResumeData(Base):
     __tablename__ = "resumes"
@@ -23,8 +13,9 @@ class ResumeData(Base):
     phone = Column(String, nullable=True)
     skills = Column(Text, nullable=True)
     experience = Column(Text, nullable=True)
-    
+
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
 
 class ResumeBase(BaseModel):
     name: Optional[str]
@@ -33,6 +24,7 @@ class ResumeBase(BaseModel):
     skills: Optional[List[str]]
     experience: Optional[str]
 
+
 class ResumeCreate(ResumeBase):
     pass
 
@@ -40,10 +32,9 @@ class ResumeCreate(ResumeBase):
 class ResumeUpdate(ResumeBase):
     pass
 
+
 class ResumeResponse(ResumeBase):
     id: int
 
     class Config:
-        orm_mode = True  
-        
-        
+        orm_mode = True

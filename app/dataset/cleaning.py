@@ -9,8 +9,4 @@ df = df.dropna(subset=["Role", "text"])
 
 df["Role"] = df["Role"].str.lower()
 df["text"] = df["text"].str.strip().str.title()
-
-# df = df.drop_duplicates()
-
-
 df.to_csv("cleaned_career_data.csv", index=False)

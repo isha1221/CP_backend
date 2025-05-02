@@ -14,21 +14,24 @@ skill_categories = {
 # Load your data
 df = pd.read_csv('cleaned_job_data.csv')
 
-# Function to categorize job titles
+# Function to categorize job titles 
+
+
 def categorize_job_title(row):
     if row['Job Title'].lower() != 'software developer':
         return row['Job Title']
-    
+
     skills = row['Key Skills'].lower()
-    
+
     # Check each category
     for category, keywords in skill_categories.items():
         for keyword in keywords:
             if keyword in skills:
                 return category
-    
+
     # Default if no match found
     return 'Software Developer'
+
 
 # Apply the categorization
 df['Job Title'] = df.apply(categorize_job_title, axis=1)

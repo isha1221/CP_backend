@@ -1,31 +1,24 @@
 from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.db import Base, engine
-# from app.models.resume_models import ResumeData
 from app.routers import resume_routes
-# auth_routes, resume_routes, prediction_routes, user_routes
 from fastapi.responses import JSONResponse
-from typing import Optional
-from app.db import get_db
-from sqlalchemy.orm import Session
-from app.services.db_service import save_resume_data
-from app.models.resume_models import ResumeResponse
 from app.routers import auth_routes
 
- 
-origins = [    "http://localhost.tiangolo.com",    "https://localhost.tiangolo.com",    "http://localhost",    "http://localhost:8080",]
- 
 
- 
+origins = ["http://localhost:3000"]
+
+
 app = FastAPI()
 
 # Allow frontend communication (e.g. React)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Set your frontend domain in production
+    # Set your frontend domain in production
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"], #allow all existing HTTP methods
-    allow_headers=["*"], #Allow all custom headers to be sent in the request. 
+    allow_methods=["*"],  # allow all existing HTTP methods
+    allow_headers=["*"],  # Allow all custom headers to be sent in the request.
 )
 
 
@@ -45,8 +38,5 @@ def generate_report(user_id: int):
     # Generate PDF using WeasyPrint
     return JSONResponse({"pdf_url": f"/reports/report_{user_id}.pdf"})
 
+
 Base.metadata.create_all(bind=engine)
-
-
-
-

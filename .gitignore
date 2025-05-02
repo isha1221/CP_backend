@@ -10,3 +10,4 @@
 resume_data.db-journal
 *.pkl
 *.csv
+resumes/*.pdf
